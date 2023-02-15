@@ -1,17 +1,17 @@
 const cheerio = require("cheerio")
 const axios = require("axios")
 const puppeteer = require('puppeteer');
-
+//https://stackoverflow.com/questions/51529332/puppeteer-scroll-down-until-you-cant-anymore
 (async () => {
     const browser = await puppeteer.launch({
         headless: false
     });
     const page = await browser.newPage();
     await page.goto("https://www.nike.com/w/mens-shoes-nik1zy7ok");
-    await page.setViewport({
-        width: 1200,
-        height: 800
-    });
+    // await page.setViewport({
+    //     width: 1200,
+    //     height: 800
+    // });
 
     await autoScroll(page);
 
@@ -26,29 +26,33 @@ const puppeteer = require('puppeteer');
 async function autoScroll(page) {
     try {
         await page.evaluate(async () => {
-            await new Promise((resolve) => {
+            await new Promise((resolve, reject) => {
                 var totalHeight = 0;
                 var distance = 100;
                 var timer = setInterval(() => {
                     var scrollHeight = document.body.scrollHeight;
                     window.scrollBy(0, distance);
                     totalHeight += distance;
-
+                    console.log("<==")
                     if (totalHeight >= scrollHeight - window.innerHeight) {
                         clearInterval(timer);
                         resolve();
+                        console.log("(==>")
+                    }
+                    else{
+                        console.log("(==>")
                     }
                     // else {
                     //     console.log("🚀💥💥💥💥💥💥💥💥💥💥💥💥")
 
                     // }
-                }, 500);
+                }, 50);
             });
         });
         await getProduct()
     }
     catch (err) {
-        console.log(err)
+        console.log("error",err)
     }
 }
 
